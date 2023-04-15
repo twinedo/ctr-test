@@ -1,5 +1,5 @@
 import {Dimensions, StatusBar, StyleSheet, Text, View} from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Lottie from 'lottie-react-native';
 import globalStyles from 'styles/globalStyles';
 import {percentageHeight, percentageWidth} from 'styles/screen_size';
@@ -49,6 +49,14 @@ export default function App() {
     clearInterval(timerRef.current);
     setIsPlaying(false);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (hoursRef.current) {
+        hoursRef.current.setValue!('12');
+      }
+    }, 200);
+  }, []);
 
   return (
     <View style={[globalStyles.displayFlex, {backgroundColor: WHITE}]}>
