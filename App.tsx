@@ -1,118 +1,208 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
+  Alert,
+  Dimensions,
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
+  TextInput,
+  TextInputProps,
   View,
 } from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import Lottie from 'lottie-react-native';
+import globalStyles from 'styles/globalStyles';
+import {percentageHeight, percentageWidth} from 'styles/screen_size';
+import LinearGradient from 'react-native-linear-gradient';
+import {SECONDARY, WHITE} from 'styles/colors';
+import {Footer, Input, Toolbar} from 'components';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {InputHandle} from 'components/Input';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+export default function App() {
+  console.log('app render');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const timerRef = useRef<number>(0);
+  const hoursRef = useRef<InputHandle>(null);
+  const minutesRef = useRef<InputHandle>(null);
+  const secondsRef = useRef<InputHandle>(null);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  const _onPlay = () => {
+    let totalSeconds =
+      Number(hoursRef.current?.getValue!()) * 3600 +
+      Number(minutesRef.current?.getValue!()) * 60 +
+      Number(secondsRef.current?.getValue!());
+    timerRef.current = setInterval(() => {
+      if (totalSeconds > 0) {
+        totalSeconds -= 1;
+        hoursRef.current?.setValue!(
+          Math.floor(totalSeconds / 3600)
+            .toString()
+            .padStart(2, '0'),
+        );
+        minutesRef.current?.setValue!(
+          Math.floor((totalSeconds % 3600) / 60)
+            .toString()
+            .padStart(2, '0'),
+        );
+        secondsRef.current?.setValue!(
+          (totalSeconds % 60).toString().padStart(2, '0'),
+        );
+      } else {
+        clearInterval(timerRef.current);
+        setIsPlaying(false);
+      }
+    }, 1000);
+    setIsPlaying(true);
+  };
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const _onPause = () => {
+    clearInterval(timerRef.current);
+    setIsPlaying(false);
+  };
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
+    <View>
+      <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
+      <View
         style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
+          styles.containerContent,
+          globalStyles.alignCenter,
+          globalStyles.justifySpaceBetween,
         ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+        <Toolbar
+          text="Before Go-live"
+          textStyle={[globalStyles.headingRegular.h2, {color: SECONDARY}]}
+          prefix={<Ionicons name="menu" color={SECONDARY} size={24} />}
+        />
+        <View>
+          <View
+            style={[
+              globalStyles.row,
+              globalStyles.justifyAround,
+              globalStyles.alignCenter,
+            ]}>
+            <View style={[globalStyles.alignCenter]}>
+              <Input
+                ref={hoursRef}
+                defaultValue={hoursRef.current?.getValue!()}
+                placeholder="00"
+                placeholderTextColor={WHITE}
+                style={[styles.input]}
+                keyboardType="numeric"
+                editable={!isPlaying}
+                maxLength={2}
+              />
+              <Text style={[globalStyles.headingLight.h3, {color: WHITE}]}>
+                HOURS
+              </Text>
+            </View>
+
+            <Text style={[globalStyles.headingRegular.h1, styles.dividen]}>
+              :
+            </Text>
+            <View style={[globalStyles.alignCenter]}>
+              <Input
+                ref={minutesRef}
+                defaultValue={minutesRef.current?.getValue!()}
+                placeholder="00"
+                placeholderTextColor={WHITE}
+                style={[styles.input]}
+                keyboardType="numeric"
+                editable={!isPlaying}
+                maxLength={2}
+              />
+              <Text style={[globalStyles.headingLight.h3, {color: WHITE}]}>
+                MINUTES
+              </Text>
+            </View>
+
+            <Text style={[globalStyles.headingRegular.h1, styles.dividen]}>
+              :
+            </Text>
+            <View style={[globalStyles.alignCenter]}>
+              <Input
+                ref={secondsRef}
+                defaultValue={secondsRef.current?.getValue!()}
+                placeholder="00"
+                placeholderTextColor={WHITE}
+                style={[styles.input]}
+                keyboardType="numeric"
+                editable={!isPlaying}
+                maxLength={2}
+              />
+              <Text style={[globalStyles.headingLight.h3, {color: WHITE}]}>
+                SECONDS
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <Footer
+          onPressStatus={(status: 'play' | 'pause') =>
+            status === 'pause' ? _onPlay() : _onPause()
+          }
+        />
+      </View>
+      <View style={styles.containerAnim}>
+        <Lottie
+          source={require('assets/images/animation.json')}
+          autoPlay
+          loop
+          style={[{width: percentageWidth(100), height: percentageWidth(100)}]}
+        />
+        <LinearGradient
+          colors={['#9277cf', '#B769D4']}
+          style={styles.linearGradient}
+        />
+      </View>
     </View>
   );
 }
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  containerContent: {
+    height: percentageHeight(100),
+    width: percentageWidth(100),
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  containerAnim: {
+    position: 'absolute',
+    top: -percentageWidth(30),
+    zIndex: -1,
   },
-  sectionDescription: {
-    marginTop: 8,
+  dividen: {
+    color: WHITE,
+    fontSize: 50,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  linearGradient: {
+    flex: 1,
+    height: percentageHeight(100),
+  },
+  //
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+  },
+  label: {
     fontSize: 18,
-    fontWeight: '400',
+    marginBottom: 8,
   },
-  highlight: {
-    fontWeight: '700',
+  input: {
+    // width: 50,
+    textAlign: 'center',
+    // height: 40,
+    // borderWidth: 1,
+    fontSize: 70,
+    paddingLeft: 8,
+    color: WHITE,
+    fontWeight: '200',
+    // marginBottom: 16,
+  },
+  timer: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 16,
   },
 });
-
-export default App;
