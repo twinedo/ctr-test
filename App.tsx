@@ -1,14 +1,5 @@
-import {
-  Alert,
-  Dimensions,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
-} from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import React, {useRef, useState} from 'react';
 import Lottie from 'lottie-react-native';
 import globalStyles from 'styles/globalStyles';
 import {percentageHeight, percentageWidth} from 'styles/screen_size';
@@ -19,7 +10,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {InputHandle} from 'components/Input';
 
 export default function App() {
-  console.log('app render');
   const [isPlaying, setIsPlaying] = useState(false);
   const timerRef = useRef<number>(0);
   const hoursRef = useRef<InputHandle>(null);
@@ -180,29 +170,11 @@ const styles = StyleSheet.create({
     height: percentageHeight(100),
   },
   //
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 8,
-  },
   input: {
-    // width: 50,
     textAlign: 'center',
-    // height: 40,
-    // borderWidth: 1,
     fontSize: 70,
     paddingLeft: 8,
     color: WHITE,
     fontWeight: '200',
-    // marginBottom: 16,
-  },
-  timer: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginTop: 16,
   },
 });

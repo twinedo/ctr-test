@@ -1,4 +1,4 @@
-import {StyleSheet, TextInput, TextInputProps} from 'react-native';
+import {TextInput, TextInputProps} from 'react-native';
 import React, {forwardRef, useImperativeHandle, useState} from 'react';
 
 export type InputHandle = {
@@ -27,5 +27,3 @@ export const Input = forwardRef<InputHandle, IInputProps>((props, ref) => {
     />
   );
 });
-
-const styles = StyleSheet.create({});

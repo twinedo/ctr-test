@@ -14,15 +14,10 @@ export default function Footer(props: IFooter) {
 
   const [isPlay, setIsPlay] = useState(false);
 
-  const _onPressBtn = useCallback(() => {
+  const _onPressBtn = () => {
     setIsPlay(!isPlay);
     onPressStatus(isPlay ? 'play' : 'pause');
-  }, [isPlay]);
-
-  //     function _onPressBtn() {
-
-  //   }
-  console.log('rerender');
+  };
 
   return (
     <View
