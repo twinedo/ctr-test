@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StatusBar, StyleSheet, Text, View} from 'react-native';
 import React, {useRef, useState} from 'react';
 import Lottie from 'lottie-react-native';
 import globalStyles from 'styles/globalStyles';
@@ -51,7 +51,7 @@ export default function App() {
   };
 
   return (
-    <View>
+    <View style={[globalStyles.displayFlex, {backgroundColor: WHITE}]}>
       <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
       <View
         style={[
@@ -136,8 +136,10 @@ export default function App() {
       <View style={styles.containerAnim}>
         <Lottie
           source={require('assets/images/animation.json')}
+          speed={3}
           autoPlay
           loop
+          resizeMode="cover"
           style={[{width: percentageWidth(100), height: percentageWidth(100)}]}
         />
         <LinearGradient
@@ -151,10 +153,10 @@ export default function App() {
 
 const styles = StyleSheet.create({
   containerContent: {
-    height: percentageHeight(100),
-    width: percentageWidth(100),
+    flex: 1,
   },
   containerAnim: {
+    backgroundColor: WHITE,
     position: 'absolute',
     top: -percentageWidth(30),
     zIndex: -1,
